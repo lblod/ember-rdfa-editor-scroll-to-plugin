@@ -1,7 +1,7 @@
 @lblod/ember-rdfa-editor-scroll-to-plugin
 ==============================================================================
 
-[Short description of the addon.]
+Plugin which provides a scroll to element in editor-document interface.
 
 Installation
 ------------------------------------------------------------------------------
@@ -10,12 +10,45 @@ Installation
 ember install ember-rdfa-editor-scroll-to-plugin
 ```
 
-
 Usage
 ------------------------------------------------------------------------------
+Location where to scroll to are defined in template as:
+```
+<!-- Define some meta data about the location in your template. -->
 
-[Longer description of how to use the addon in apps.]
+<div class="ext_scroll_to" typeof="ext:ScrollToLocation" resource="http://uri/1">
+  <div property="ext:scrollToLogicalName" content="feynmans_scientific_work">feynmans_scientific_work</div>
+  <div property="ext:idInSnippet" content="a-uuid">a-uuid</div>
+</div>
 
+<!-- Somehwere in the text, the element of interest is provided. -->
+
+<div id="a-uuid"> Selected scientific work. </div>
+```
+
+A component could use is as:
+```
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+
+export default Component.extend({
+  scrollToPlugin: service('rdfa-editor-scroll-to-plugin'),
+  actions: {
+    scrollToFeynmansScientificWork(){
+      this.scrollToPlugin.scrollTo('feynmans_scientific_work');
+    }
+  }
+```
+
+Notes:
+* Only the first instance of ext:ScrollToLocation will work as a location scroll to.
+* You are in charge of making sure `<div property="ext:idInSnippet" content="foo">foo</div>` and ` id="foo"` are in sync and unique.
+* `class="ext_scroll_to"` is optional, but makes your meta block invisible
+
+In host app:  styles/app.scss:
+```
+@import 'ember-rdfa-editor-scroll-to-plugin';
+```
 
 Contributing
 ------------------------------------------------------------------------------
