@@ -13,7 +13,7 @@ export default Mixin.create({
   manageMetadata(editor){
     let metadataBlock = this.fetchOrCreateMetadataBlock(editor);
     this.movedataToMetaBlock(editor, metadataBlock);
-    let flatData  = this.flattenInstanceData(editor);
+    let flatData  = this.flattenInstanceData(editor.rootNode);
     return this.cleanUpNullReferences(editor, flatData);
   },
 
@@ -60,8 +60,8 @@ export default Mixin.create({
    *
    * @return {Array} [{intentionUri, TasklistDataInstance, variabelState, TasklistDataMeta}]
    */
-  flattenInstanceData(editor){
-    let dataInstances = [ ...editor.rootNode.querySelectorAll("[typeof='ext:ScrollToLocation']")];
+  flattenInstanceData(node){
+    let dataInstances = [ ...node.querySelectorAll("[typeof='ext:ScrollToLocation']")];
     return dataInstances.map( data => {
       return {
         scrollToLogicalName: this.getScrollToLogicalName(data),

@@ -33,20 +33,21 @@ const RdfaEditorScrollToPlugin = Service.extend(MetaBlockManagement, {
     if(extraInfo.find(i => i && i.who == this.who))
       return [];
 
-    this.set('flatScrollLocs', this.manageMetadata(editor));
+    this.manageMetadata(editor);
   }).restartable(),
 
   async scrollTo(location){
-    let locationDomInstance = (this.flatScrollLocs.find(l =>  l.scrollToLogicalName == location) || {}).dataInstance;
+    let flatScrollLocs = this.flattenInstanceData(document);
+    let locationDomInstance = (flatScrollLocs.find(l =>  l.scrollToLogicalName == location) || {}).dataInstance;
     if(!locationDomInstance){
       return;
     }
 
-    //TODO: fix workaround -> event is not always fired
+    //TODO: fix workaround -> transistion end event is not always fired
     let animationClass = 'scrollto-highlight';
     locationDomInstance.classList.add(animationClass);
     locationDomInstance.scrollIntoView();
-    window.setTimeout(() => locationDomInstance.classList.remove(animationClass), 3000);
+    window.setTimeout(() => locationDomInstance.classList.remove(animationClass), 2000);
 
   }
 
