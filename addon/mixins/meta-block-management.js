@@ -34,6 +34,10 @@ export default Mixin.create({
     });
   },
 
+  moveHtmlToMetaBlock(editor, variablesBlock, variableHtml){
+    editor.prependChildrenHTML(variablesBlock, variableHtml, false, [ this ]);
+  },
+
   /**
    * We want to fetch or create the metadata block in the editor-document.
    * This will containing the meta data of the variables
@@ -52,7 +56,6 @@ export default Mixin.create({
                                        </div>`,
                                       true, [ this ])[0];
   },
-
 
   /**
    * Find all instances and return as list together with some meta data
@@ -113,5 +116,11 @@ export default Mixin.create({
       }
       return acc;
     }, []);
+  },
+
+  removeVariables(editor, logicalName){
+    let flatData  = this.flattenInstanceData(editor.rootNode);
+    let variables = flatData.filter(v => v.scrollToLogicalName == logicalName);
+    variables.forEach(v => editor.removeNode(v.dataMeta, [ this ]));
   }
 });

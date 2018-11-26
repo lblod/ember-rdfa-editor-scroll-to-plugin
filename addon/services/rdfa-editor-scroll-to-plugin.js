@@ -1,6 +1,7 @@
 import Service from '@ember/service';
 import { task, timeout } from 'ember-concurrency';
 import MetaBlockManagement from '../mixins/meta-block-management';
+import uuid from 'uuid/v4';
 
 /**
  * Service responsible for providing scroll to interface
@@ -49,6 +50,39 @@ const RdfaEditorScrollToPlugin = Service.extend(MetaBlockManagement, {
     locationDomInstance.scrollIntoView();
     window.setTimeout(() => locationDomInstance.classList.remove(animationClass), 2000);
 
+  },
+
+  addScrollToLocation(editor, domNode, logicalName, removePreviousVariables = true, notifyPlugins = true){
+    domNode.id = domNode.id ? domNode.id : uuid();
+    let metaHtml = `
+    <div class="ext_scroll_to" typeof="ext:ScrollToLocation" resource="http://scrollTo/${logicalName}/${domNode.id}">
+      <div property="ext:scrollToLogicalName" content="${logicalName}">${logicalName}</div>
+      <div property="ext:idInSnippet" content="${domNode.id}">${domNode.id}</div>
+    </div>`;
+
+    if(notifyPlugins){
+      if(removePreviousVariables){
+        this.removeVariables(editor, logicalName);
+      }
+      let variablesBlock = this.fetchOrCreateMetadataBlock(editor);
+      this.moveHtmlToMetaBlock(editor, variablesBlock, metaHtml);
+      return;
+    }
+    /*
+     * Note: this could be a temporary code path. Of at least the current implementation.
+     * In some cases, we don't want to trigger plugins.
+     *   E.g: adding a last-save-point and then transitioning to a new route.
+     *        This could make plugins work on non attached dom nodes. Which, for now, results in errors etc.
+     *       -> To mitigate the issue above, we'd opt for a general sync point (e.g. a lock of the editor of some sort)
+     *        Now, there is no time to dig the topic further, we have 2 days left before release.
+     */
+    if(removePreviousVariables){
+      let variables = document.querySelectorAll(`[property="ext:scrollToLogicalName"][content="${logicalName}"]`);
+      variables.forEach(v => v.parentElement.remove());
+    }
+    let template = document.createElement('template');
+    template.innerHTML = metaHtml.trim();
+    document.querySelector('[property="ext:metadata"]').appendChild(template.content.firstChild);
   }
 
 });
