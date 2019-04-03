@@ -5,6 +5,30 @@ import uuid from 'uuid/v4';
 
 /**
  * Service responsible for providing scroll to interface
+ * ---------------------------------------------------
+ * CODE REVIEW NOTES
+ * ---------------------------------------------------
+ *
+ *  INTERACTION PATTERNS
+ *  --------------------
+ *  The interataction pattern is more or less simimilar to variable-plugin.
+ *  I.e, in the template an element with metadata about the scrollTo location is provided,
+ *  linking an element by id, with a scrollTo logical name (see README for further details).
+ *  Once triggered the plugin is looking for these specific metadata elements, and moves them to the metadata block.
+ *  The plugin then exposes a scroll to location interface, and handles the scrolling.
+ *
+ *  POTENTIAL ISSUES/TODO
+ *  ---------------------
+ *  - The interaction pattern of moving metadata nodes to metadata block, creating a metadata block if non existant, etc.
+ *     Is occuring by directly scanning the DOM and not trough the editor. Which could be considered as abstraction leakage.
+ *  - The same goes for scrolling, the editor is not aware a scroll action ocured.
+ *     Which might be problematic if e.g. pagination of the document is implemented.
+ *  - There is also a 'silent' dom update. In some cases, a scroll point is added (i.e. the DOM is modified) without the editor
+ *    being aware of it. (see addScrollToLocation in this service).
+ *  - TODO: eventually reconsider the restarable task. (but since all sync code, this should not affect the hints generation)
+ * ---------------------------------------------------
+ * END CODE REVIEW NOTES
+ * ---------------------------------------------------
  *
  * @module editor-scroll-to-plugin
  * @class RdfaEditorScrollToPlugin
