@@ -21,11 +21,12 @@ import uuid from 'uuid/v4';
  *  ---------------------
  *  - The interaction pattern of moving metadata nodes to metadata block, creating a metadata block if non existant, etc.
  *     Is occuring by directly scanning the DOM and not trough the editor. Which could be considered as abstraction leakage.
+ *     Note this was a strategy to avoid working on dead dom nodes.
  *  - The same goes for scrolling, the editor is not aware a scroll action ocured.
  *     Which might be problematic if e.g. pagination of the document is implemented.
  *  - There is also a 'silent' dom update. In some cases, a scroll point is added (i.e. the DOM is modified) without the editor
  *    being aware of it. (see addScrollToLocation in this service).
- *  - TODO: eventually reconsider the restarable task. (but since all sync code, this should not affect the hints generation)
+ *  - TODO: reconsider the restarable task. (not entirly sure why the yield is there)
  * ---------------------------------------------------
  * END CODE REVIEW NOTES
  * ---------------------------------------------------
