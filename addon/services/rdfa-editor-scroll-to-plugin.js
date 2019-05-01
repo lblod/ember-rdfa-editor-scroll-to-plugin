@@ -27,15 +27,12 @@ const RdfaEditorScrollToPlugin = Service.extend(MetaBlockManagement, {
    */
   execute: task(function * (hrId, contexts, hintsRegistry, editor, extraInfo = []) {
     if (contexts.length === 0) return [];
-
-     yield timeout(200);
-
      //if we see event was triggered by this plugin, ignore it
     if(extraInfo.find(i => i && i.who == this.who))
       return [];
 
     this.manageMetadata(editor);
-  }).restartable(),
+  }),
 
   async scrollTo(location){
     let flatScrollLocs = this.flattenInstanceData(document);
